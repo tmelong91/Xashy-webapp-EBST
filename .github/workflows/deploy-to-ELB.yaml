@@ -2,37 +2,36 @@ name: deploy to elastic beanstalk
 on: 
   push:
     branches:
-        - main
+      - main
   workflow_dispatch:
 
 jobs:
   deploytoelb:
-      runs-on: ubuntu-latest
-      permissions:
-        contents: read
-        packages: write
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
-      steps:
-          - name: checkout code from repo
-            uses: action/checkout@v3
+    steps:
+      - name: checkout code from repo
+        uses: actions/checkout@v2
 
-          - name: setup the java and maven environment
-            uses: action/setup-java@v3
-            with:
-              distribution: 'adopt'
-              java-version:  '11'
+      - name: setup the java and maven environment
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '11'
 
+      - name: build artifact with maven
+        run: mvn package
 
-          - name: build artifact with maven
-            run: mvn package
+      - name: analyze with sonarcloud
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=tmelong91_Xashy-webapp-EBST
 
-          - name: analyze with sonarcloud
-            env:
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-            run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=tmelong91_Xashy-webapp-EBST
-
-          - name: publish to github packages
-            run: mvn --batch-mode deploy
-            env:
-              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: publish to github packages
+        run: mvn --batch-mode deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
