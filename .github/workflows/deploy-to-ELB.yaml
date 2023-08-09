@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploytoelb:
+  deploy-to-elb:
       runs-on: ubuntu-latest
       permissions:
         contents: read
