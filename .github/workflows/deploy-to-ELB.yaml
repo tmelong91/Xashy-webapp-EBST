@@ -1,0 +1,30 @@
+name : deploy to elastic beanstalk
+on: 
+   push:
+     branches:
+       main
+   workflow_dispatch:
+jobs:
+   buildanddeploytoelb:
+      runs-on: ubuntu-latest
+      permissions:
+          contents: write
+          packages: read
+      steps:
+          - name: checkoout code from repo
+            uses: action/checkout@v3
+          - name: setup the java and maven environment
+            with:
+              distribution: 'adopt'
+              java-version:  '11'
+          - name: build artifact with maven
+            run: mvn package
+          - name: analyze with sonarcloud
+            env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+            run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=tmelong91_Xashy-webapp-EBST
+          - name: publish to github packages
+            run: mvn --batch-mode deploy
+            env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
