@@ -82,7 +82,7 @@
 	    <repository>
 	      <id>github</id>
 	      <name></name>
-	      <url>https://github.com/tmelong91/Xashy-webapp-EBST.git</url>
+	      <url>https://maven.pkg.github.com/tmelong91/Xashy-webapp-EBST.git</url>
 	    </repository>
 	    
 	    
