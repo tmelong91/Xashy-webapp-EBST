@@ -44,12 +44,12 @@ jobs:
           aws-region: ${{secrets.AWS_REGION}}
 
       - name: Deploy to s3
-        run: aws s3 cp target/*war s3://xashy-app
+        run: aws s3 cp target/*war s3://xashy-web-app
 
       - name: Create ELB app version for artifact
         run: aws elasticbeanstalk create-application-version \
                 --application-name xashywebapp \
-                --source-bundle S3Bucket="xashy-app",S3Key="xashywebapp.war" \
+                --source-bundle S3Bucket="xashy-web-app",S3Key="xashywebapp.war" \
                 --version-label "ver-${{ github.sha }}" \
                 --description "commit-sha-${{ github.sha }}"
 
