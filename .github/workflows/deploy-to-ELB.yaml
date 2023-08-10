@@ -47,7 +47,11 @@ jobs:
         run: aws s3 cp target/*war s3://xashy-web-app
 
       - name: Create ELB app version for artifact
-        run: aws elasticbeanstalk create-application-version \ --application-name web-app \ --source-bundle S3Bucket="xashy-web-app",S3Key="web-app.war" \ --version-label "ver-${{ github.sha }}" \ --description "commit-sha-${{ github.sha }}"
+        run: aws elasticbeanstalk create-application-version \
+            --application-name web-app \
+            --source-bundle S3Bucket="xashy-web-app",S3Key="web-app.war" \
+            --version-label "ver-${{ github.sha }}" \
+            --description "commit-sha-${{ github.sha }}"
 
       - name: update environment with application version
         run: aws elasticbeanstalk update-environment --environment-name Web-app-env --version-label "ver-${{ github.sha }}"
